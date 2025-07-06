@@ -91,10 +91,11 @@ class AppController {
             throw err;
         }
     }
-
+   
+    // Update developer details
     async updateEmp(req, res) {
         try {
-            let empId = req.params.id;
+            const empId = req.params.id;
             const { fullName, email, skills } = req.body;
 
             // Validate required fields
@@ -111,44 +112,58 @@ class AppController {
             }
 
             // Check for duplicate email (excluding current)
-            const existingEmail = await EmpModel.findOne({ email, isDeleted: false, _id: { $ne: empId } });
+            const existingEmail = await EmpModel.findOne({
+                email,
+                isDeleted: false,
+                _id: { $ne: empId }
+            });
             if (existingEmail) {
                 console.log("Email already exists.");
                 return res.redirect(`/edit/${empId}`);
             }
+            const skillsArray = skills
+            .split(",")
+            .map(s => s.trim())
+            .filter(s => s);
 
             // Prepare update object
-            let updateObj = {
+            const updateObj = {
                 fullName,
                 email,
-                skills: skills.split(",").map(s => s.trim()).join(",")
+                skills: skillsArray, 
             };
 
-            // Handle resume update
-            if (req.files && req.files.resumePdf && req.files.resumePdf[0]) {
-                const resumeFile = req.files.resumePdf[0];
+            // If a new resume is uploaded, replace the old one
+            if (req.file) {
+                const resumeFile = req.file;
+
                 if (resumeFile.mimetype !== "application/pdf") {
                     console.log("Resume must be a PDF file.");
                     return res.redirect(`/edit/${empId}`);
                 }
-                // Remove old resume file
+
+                // Remove old resume
                 const emp = await EmpModel.findById(empId);
                 if (emp && emp.resumePdf) {
-                    const oldPath = path.join(__dirname, "../uploads", emp.resumePdf);
+                    const oldPath = path.join(__dirname, "../public/uploads", emp.resumePdf);
                     if (fs.existsSync(oldPath)) {
                         fs.unlinkSync(oldPath);
                     }
                 }
+
+                // Add new resume to update object
                 updateObj.resumePdf = resumeFile.filename;
             }
 
+            // Update in DB
             await EmpModel.findByIdAndUpdate(empId, updateObj, { new: true });
             res.redirect("/");
         } catch (err) {
-            console.log(err);
-            return res.redirect(`/edit/${req.params.id}`);
+            console.log("Update error:", err);
+            res.redirect(`/edit/${req.params.id}`);
         }
     }
+
 
     // Hard delete with resume removal
     async deleteEmp(req, res) {
