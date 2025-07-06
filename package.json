@@ -1,0 +1,28 @@
+{
+  "name": "developer-database",
+  "version": "1.0.0",
+  "description": "Working With Database",
+  "homepage": "https://github.com/subhadip-dev94/developer-lists#readme",
+  "bugs": {
+    "url": "https://github.com/subhadip-dev94/developer-lists/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/subhadip-dev94/developer-lists.git"
+  },
+  "license": "MIT",
+  "author": "Subhadip Maity",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.1",
+    "multer": "^2.0.1",
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,25 @@
+<%- include("./layouts/header") %>
+<div class="container">
+  <h1>Developer Details</h1>
+  <form action="/submit-form" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" class="form-control" placeholder="Enter Full Name" name="fullName">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" class="form-control" placeholder="Enter email" name="email">
+    </div>
+    <div class="form-group">
+      <label>Skills</label>
+      <input type="text" class="form-control" placeholder="Enter skills (comma separated)" name="skills">
+    </div>
+    <div class="form-group">
+      <label>Resume (PDF)</label>
+      <input type="file" class="form-control" name="resumePdf" accept="application/pdf">
+    </div>
+    <input type="submit" class="btn btn-primary">
+  </form>
+</div>
+
+<%- include("./layouts/footer") %>
